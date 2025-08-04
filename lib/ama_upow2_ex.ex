@@ -41,19 +41,20 @@ defmodule UPOW do
   end
 
   def test() do
-    Enum.reduce(1..10000, <<0xFF>>, fn itr, best ->
+    Enum.reduce(1..10, {<<0xFF>>, <<0xFF>>}, fn itr, {h, best} ->
       IO.inspect({"pow #{itr} so far best sol", best})
 
-      pk = Application.fetch_env!(:ama, :trainer_pk)
-      pop = Application.fetch_env!(:ama, :trainer_pop)
-      epoch = Consensus.DB.chain_epoch()
+      pk = <<0::integer-size(48 * 8)>>
+      pop = <<0::integer-size(96 * 8)>>
+      vr = <<0::integer-size(96 * 8)>>
+      epoch = 200
 
-      {hash, sol} = branch_sol(epoch, <<>>, pk, pop, pk)
+      {hash, sol} = branch_sol(epoch, pk, pop, pk, vr)
 
-      if hash < best do
-        sol
+      if hash < h do
+        {hash, sol}
       else
-        best
+        {h, best}
       end
     end)
   end
@@ -180,16 +181,16 @@ end
 
 defmodule UPOW2 do
   def tensormath(epoch, segment_vr_hash, trainer, pop, computor) do
-    nonce = :crypto.strong_rand_bytes(12)
+    nonce = <<0::size(12*8)>> 
 
-   
     sol_seed =
       <<epoch::32-little, segment_vr_hash::binary, trainer::binary, pop::binary, computor::binary,
         nonce::binary>>
 
     tensor_c = calculate_matmul(sol_seed)
     sol = sol_seed <> tensor_c
-    {Blake3.hash(sol), sol}
+    res = IO.inspect(Blake3.hash(sol))
+    {res, sol}
   end
 
   def calculate_matmul(sol_seed) when byte_size(sol_seed) == 240 do

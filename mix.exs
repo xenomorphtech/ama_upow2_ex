@@ -21,7 +21,8 @@ defmodule AmaUpow2Ex.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:blake3, git: "https://github.com/vans163/blake3", branch: "finalize_xof"}
+      {:blake3, git: "https://github.com/vans163/blake3", branch: "finalize_xof"},
+      {:rustler, ">= 0.36.1"}
     ]
   end
 end
