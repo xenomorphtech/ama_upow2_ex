@@ -6,7 +6,6 @@ use rustler::{Binary, Env, NifResult, OwnedBinary};
 mod upow2;
 use rustler::types::atom::ok; // returns {:ok, …}
 
-
 #[rustler::nif(schedule = "DirtyCpu")]
 pub fn tensormath<'a>(
     env: Env<'a>,
